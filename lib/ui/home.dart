@@ -120,7 +120,7 @@ class HomeState extends State<Home> {
                                   children: [
                                     dadosCidade['nome'].toString().isNotEmpty ?
                                     Text(
-                                      dadosCidade['temp'].toString(),
+                                      dadosCidade['temp'].round().toString() + "\u00b0C",
                                       style: TextStyle(fontWeight: FontWeight.bold, fontSize: 45, color: Colors.white),
                                     ) : Text(''),
                                   ],
@@ -130,7 +130,7 @@ class HomeState extends State<Home> {
                                   children: [
                                     dadosCidade['nome'].toString().isNotEmpty ?
                                     Text(
-                                      "Min.: " + dadosCidade['temp_min'].toString() + " / Máx.: " + dadosCidade['temp_max'].toString(),
+                                      "Min.: " + dadosCidade['temp_min'].round().toString() + "\u00b0C / Máx.: " + dadosCidade['temp_max'].round().toString() + "\u00b0C",
                                       style: TextStyle(fontSize: 20, color: Colors.white),
                                     ) : Text(''),
                                   ],
