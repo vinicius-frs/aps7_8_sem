@@ -23,20 +23,6 @@ class HomeState extends State<Home> {
   String? errorText;
 
   @override
-  void initState() {
-    super.initState();
-    getCity("Varzea Paulista").then((response){
-      dadosCidade['nome'] = response['name'];
-      dadosCidade['pais'] = response['sys']['country'];
-      dadosCidade['clima_desc'] = response['weather'][0]['description'];
-      dadosCidade['clima_icon'] = response['weather'][0]['icon'];
-      dadosCidade['temp'] = response['main']['temp'];
-      dadosCidade['temp_min'] = response['main']['temp_min'];
-      dadosCidade['temp_max'] = response['main']['temp_max'];
-    });
-  }
-
-  @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
@@ -50,18 +36,25 @@ class HomeState extends State<Home> {
                     Expanded(
                       child: TextField(
                         controller: SearchController,
+                        style: TextStyle(color: Colors.white),
                         decoration: InputDecoration(
+                          enabledBorder: const OutlineInputBorder(
+                            borderSide: BorderSide(
+                              color: Color(0xff002163)
+                            )
+                          ),
                           border: const OutlineInputBorder(),
                           labelText: 'Pesquise uma cidade',
                           hintText: 'Ex. Jundiaí',
+                          hintStyle: TextStyle(color: Colors.white),
                           errorText: errorText,
                           focusedBorder: const OutlineInputBorder(
                             borderSide: BorderSide(
-                              color: Color(0xff00d7f3),
+                              color: Color(0xff002163),
                             ),
                           ),
                           labelStyle: const TextStyle(
-                            color: Color(0xff00d7f3),
+                            color: Colors.white,
                           ),
                         ),
                       ),
@@ -79,20 +72,24 @@ class HomeState extends State<Home> {
                         }
                         getCity(text).then((response){
                           setState(() {
-                            dadosCidade['nome'] = response['name'];
-                            dadosCidade['pais'] = response['sys']['country'];
-                            dadosCidade['clima_desc'] = response['weather'][0]['description'];
-                            dadosCidade['clima_icon'] = response['weather'][0]['icon'];
-                            dadosCidade['temp'] = response['main']['temp'];
-                            dadosCidade['temp_min'] = response['main']['temp_min'];
-                            dadosCidade['temp_max'] = response['main']['temp_max'];
-                            errorText = null;
+                            if(response['cod'] == 404 || response['cod'] == '404'){
+                              errorText = 'Cidade não encontrada';
+                            }
+                            if(response['cod'] == 200 || response['cod'] == '200'){
+                              dadosCidade['nome'] = response['name'];
+                              dadosCidade['pais'] = response['sys']['country'];
+                              dadosCidade['clima_desc'] = response['weather'][0]['description'];
+                              dadosCidade['clima_icon'] = response['weather'][0]['icon'];
+                              dadosCidade['temp'] = response['main']['temp'];
+                              dadosCidade['temp_min'] = response['main']['temp_min'];
+                              dadosCidade['temp_max'] = response['main']['temp_max'];
+                              errorText = null;
+                            }
                           });
-                          print(dadosCidade);
                         });
                       },
                       style: ElevatedButton.styleFrom(
-                        primary: const Color(0xff00d7f3),
+                        primary: const Color(0xff002163),
                         padding: const EdgeInsets.all(14),
                       ),
                       child: const Icon(
@@ -102,23 +99,68 @@ class HomeState extends State<Home> {
                     ),
                   ],
                 ),
+                const SizedBox(height: 50),
                 Row(
                   children: [
-                      dadosCidade['nome'].toString().isNotEmpty ? Text(dadosCidade['nome'] + ", " + dadosCidade['pais']) : Text(''),
-                      dadosCidade['nome'].toString().isNotEmpty ? Text(dadosCidade['temp'].toString()) : Text(''),
-                      dadosCidade['nome'].toString().isNotEmpty ? Image.network(
-                        baseUrlIcon.replaceAll('#cod_icon#', dadosCidade['clima_icon']),
-                        height: 20,
-                        width: 20,
-                      ) : Text(''),
-                      dadosCidade['nome'].toString().isNotEmpty ? Text(dadosCidade['clima_desc']) : Text(''),
-                      dadosCidade['nome'].toString().isNotEmpty ? Text("Min.: " + dadosCidade['temp_min'].toString() + " / Máx.: " + dadosCidade['temp_max'].toString()) : Text(''),
+                    Expanded(
+                        child: Column(
+                            children: [
+                              Row(
+                                  children: [
+                                    dadosCidade['nome'].toString().isNotEmpty ?
+                                    Text(
+                                      dadosCidade['nome'] + ", " + dadosCidade['pais'],
+                                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 30, color: Colors.white),
+                                    ) : Text('')
+                                  ],
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                              ),
+                              Row(
+                                  children: [
+                                    dadosCidade['nome'].toString().isNotEmpty ?
+                                    Text(
+                                      dadosCidade['temp'].toString(),
+                                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 45, color: Colors.white),
+                                    ) : Text(''),
+                                  ],
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                              ),
+                              Row(
+                                  children: [
+                                    dadosCidade['nome'].toString().isNotEmpty ?
+                                    Text(
+                                      "Min.: " + dadosCidade['temp_min'].toString() + " / Máx.: " + dadosCidade['temp_max'].toString(),
+                                      style: TextStyle(fontSize: 20, color: Colors.white),
+                                    ) : Text(''),
+                                  ],
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                              ),
+                              Row(
+                                  children: [
+                                    dadosCidade['nome'].toString().isNotEmpty ? Image.network(
+                                      baseUrlIcon.replaceAll('#cod_icon#', dadosCidade['clima_icon']),
+                                      height: 30,
+                                      width: 30,
+                                    ) : Text(''),
+                                    dadosCidade['nome'].toString().isNotEmpty ?
+                                    Text(
+                                      dadosCidade['clima_desc'],
+                                      style: TextStyle(fontSize: 20, color: Colors.white),
+                                    ) : Text(''),
+                                  ],
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                              ),
+                            ]
+                        ),
+                        flex: 10,
+                    ),
                   ],
                 ),
               ],
             ),
           ),
         ),
+        backgroundColor: Color(0xff010012),
       ),
     );
   }
