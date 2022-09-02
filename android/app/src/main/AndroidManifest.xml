@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.aps7_8_sem">
    <application
-        android:label="aps7_8_sem"
+        android:label="ClimaCity"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity
