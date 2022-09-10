@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:aps7_8_sem/lib/getCity.dart';
+import 'package:aps7_8_sem/lib/climaCityClass.dart';
 
 class Home extends StatefulWidget {
   @override
@@ -8,15 +9,7 @@ class Home extends StatefulWidget {
 
 const baseUrlIcon = "http://openweathermap.org/img/wn/#cod_icon#.png";
 
-Map<String, dynamic> dadosCidade = {
-  'nome': '',
-  'pais': '',
-  'clima_desc': '',
-  'clima_icon': '',
-  'temp': 0,
-  'temp_min': 0,
-  'temp_max': 0,
-};
+ClimaCity cidade = ClimaCity('', '', '', '', 0, 0, 0);
 
 class HomeState extends State<Home> {
   final TextEditingController SearchController = TextEditingController();
@@ -77,13 +70,13 @@ class HomeState extends State<Home> {
                               errorText = 'Cidade não encontrada';
                             }
                             if(response['cod'] == 200 || response['cod'] == '200'){
-                              dadosCidade['nome'] = response['name'];
-                              dadosCidade['pais'] = response['sys']['country'];
-                              dadosCidade['clima_desc'] = response['weather'][0]['description'];
-                              dadosCidade['clima_icon'] = response['weather'][0]['icon'];
-                              dadosCidade['temp'] = response['main']['temp'];
-                              dadosCidade['temp_min'] = response['main']['temp_min'];
-                              dadosCidade['temp_max'] = response['main']['temp_max'];
+                              cidade.nome = response['name'];
+                              cidade.pais = response['sys']['country'];
+                              cidade.climaDesc = response['weather'][0]['description'];
+                              cidade.climaIcon = response['weather'][0]['icon'];
+                              cidade.temp = response['main']['temp'];
+                              cidade.tempMin = response['main']['temp_min'];
+                              cidade.tempMax = response['main']['temp_max'];
                               errorText = null;
                             }
                           });
@@ -108,9 +101,9 @@ class HomeState extends State<Home> {
                             children: [
                               Row(
                                   children: [
-                                    dadosCidade['nome'].toString().isNotEmpty ?
+                                    cidade.nome.toString().isNotEmpty ?
                                     Text(
-                                      dadosCidade['nome'] + ", " + dadosCidade['pais'],
+                                      cidade.nome + ", " + cidade.pais,
                                       style: TextStyle(fontWeight: FontWeight.bold, fontSize: 30, color: Colors.white),
                                     ) : Text('')
                                   ],
@@ -118,9 +111,9 @@ class HomeState extends State<Home> {
                               ),
                               Row(
                                   children: [
-                                    dadosCidade['nome'].toString().isNotEmpty ?
+                                    cidade.nome.toString().isNotEmpty ?
                                     Text(
-                                      dadosCidade['temp'].round().toString() + "\u00b0C",
+                                      cidade.temp.round().toString() + "\u00b0C",
                                       style: TextStyle(fontWeight: FontWeight.bold, fontSize: 45, color: Colors.white),
                                     ) : Text(''),
                                   ],
@@ -128,9 +121,9 @@ class HomeState extends State<Home> {
                               ),
                               Row(
                                   children: [
-                                    dadosCidade['nome'].toString().isNotEmpty ?
+                                    cidade.nome.toString().isNotEmpty ?
                                     Text(
-                                      "Min.: " + dadosCidade['temp_min'].round().toString() + "\u00b0C / Máx.: " + dadosCidade['temp_max'].round().toString() + "\u00b0C",
+                                      "Min.: " + cidade.tempMin.round().toString() + "\u00b0C / Máx.: " + cidade.tempMax.round().toString() + "\u00b0C",
                                       style: TextStyle(fontSize: 20, color: Colors.white),
                                     ) : Text(''),
                                   ],
@@ -138,14 +131,14 @@ class HomeState extends State<Home> {
                               ),
                               Row(
                                   children: [
-                                    dadosCidade['nome'].toString().isNotEmpty ? Image.network(
-                                      baseUrlIcon.replaceAll('#cod_icon#', dadosCidade['clima_icon']),
+                                    cidade.nome.toString().isNotEmpty ? Image.network(
+                                      baseUrlIcon.replaceAll('#cod_icon#', cidade.climaIcon),
                                       height: 30,
                                       width: 30,
                                     ) : Text(''),
-                                    dadosCidade['nome'].toString().isNotEmpty ?
+                                    cidade.nome.toString().isNotEmpty ?
                                     Text(
-                                      dadosCidade['clima_desc'],
+                                      cidade.climaDesc,
                                       style: TextStyle(fontSize: 20, color: Colors.white),
                                     ) : Text(''),
                                   ],
